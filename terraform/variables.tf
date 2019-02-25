@@ -9,3 +9,16 @@ variable "aws_secret_key" {
 variable "aws_region" {
    type = "string"
 }
+
+#Global variables
+
+variable "project" {
+   type = "string"
+   default = "default-app"
+}
+
+variable "environment" {
+   type = "string"
+   default = "stage"
+}
+
