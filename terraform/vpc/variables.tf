@@ -12,3 +12,7 @@ variable "cidr_private_subnet" {
    type = "list"
    default = ["10.11.0.0/24" , "10.12.0.0/24" , "10.13.0.0/24", "10.14.0.0/24", "10.15.0.0/24"]
 }
+
+variable "project" {}
+
+variable "environment" {}

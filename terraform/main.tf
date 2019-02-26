@@ -8,6 +8,8 @@ provider "aws" {
 #VPC module
 module "vpc" {
    source = "./vpc"
+   project = "${var.project}"
+   environment = "${var.environment}"
 }
 
 module "static_web" {
