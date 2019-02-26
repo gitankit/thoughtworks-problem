@@ -61,7 +61,7 @@ resource "aws_eip" "natg_eip" {
 resource "aws_nat_gateway" "natgw" {
   allocation_id = "${aws_eip.natg_eip.id}"
    #Always at least one public subnet will be created.
-  subnet_id     = "${element(aws_subnet.public.*.id, 0}"
+  subnet_id     = "${element(aws_subnet.public.*.id, 0)}"
 
   tags = {
     Name = "NAT Gw"
@@ -89,14 +89,14 @@ resource "aws_route_table" "private" {
 #Associate public subnets
 resource "aws_route_table_association" "public_associations" {
   count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
-  subnet_id      = "${element(aws_subnet.public.*.id, count.index}"
+  subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id = "${aws_route_table.public.id}"
 }
 
 #Associate private subnets
 resource "aws_route_table_association" "private_associations" {
   count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
-  subnet_id      = "${element(aws_subnet.private.*.id, count.index}"
+  subnet_id      = "${element(aws_subnet.private.*.id, count.index)}"
   route_table_id = "${aws_route_table.private.id}"
 }
 
