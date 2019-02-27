@@ -14,10 +14,19 @@ module "vpc" {
 
 module "static_web" {
    source = "./static"
+   private_subnets = "${module.vpc.private_subnets}"
+   project = "${var.project}"
+   environment = "${var.environment}"
+   aws_ami = "${var.aws_ami}"
 }
 
 module "application" {
    source = "./app"
+   #public_subnets = "${module.vpc.public_subnets}"
+   private_subnets = "${module.vpc.private_subnets}"
+   project = "${var.project}"
+   environment = "${var.environment}"
+   aws_ami = "${var.aws_ami}"
 }
 
 

@@ -22,4 +22,6 @@ variable "environment" {
    default = "stage"
 }
 
-
+variable "aws_ami" {
+   default = "ami-0cd3dfa4e37921605"
+}
