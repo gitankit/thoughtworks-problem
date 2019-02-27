@@ -25,6 +25,7 @@ resource "aws_subnet" "public" {
    cidr_block = "${var.cidr_public_subnet[count.index]}"
    tags = {
       Name = "${format("public-%01d" , count.index + 1)}"
+      SubnetType = "public"
    }
 }
 
@@ -36,6 +37,7 @@ resource "aws_subnet" "private" {
    cidr_block = "${var.cidr_private_subnet[count.index]}"
    tags = {
       Name = "${format("private-%01d" , count.index + 1)}"
+      SubnetType = "private"
    }
 }
 
@@ -109,6 +111,6 @@ output "private_subnets" {
    value = ["${aws_subnet.private.*.id}"]
 }
 
-
-
-
+output "vpc_id" {
+   value = "${aws_vpc.vpc.id}"
+}

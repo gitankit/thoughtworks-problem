@@ -1,5 +1,9 @@
 #Keypair for instances
 resource "aws_key_pair" "aws_access" {
-  key_name   = "aws_access"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohBK41 email@example.com"
+  key_name   = "${var.aws_key_name}"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDp+XKyf5MNuQ5kUU1h471zZTcLJLl1SCJ6OVRLW6fkxa4ED1P+A6T9aLuUjQMpy2zdNT312WsuVQoWmRhAaOy45tcR8lLdvAqRFQZ0RSNC+aeQVgZ0fBGlXrNnGW8FJJjS/183NakqxXic1KO0LGAhqr0fO468jd/w3rzwivHnD3ika9oLbm1nX2UXQxU8R6cHFVLTrhf0esGmt05AsYgdrMdQus7n5cICePWSh/IoM6BKiYrDZeDSRcWFsVDQOMbxPn2Pn2mrtqmSiqipLkAJO2mU6NNKN8tjkQnzbdOd1Xu2S1gDteiMAQRWcfWI3bphYB9scRfmmzHgiXNq4jmV root@ubuntu-bionic"
 }
+
+
+
+
