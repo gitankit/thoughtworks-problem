@@ -48,6 +48,19 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
+resource "aws_lb_target_group" "static_tg" {
+  name     = "static"
+  port     = 8080
+  protocol = "TCP"
+  vpc_id   = "${var.vpc_id}"
+  target_type = "instance"
+  health_check {
+    interval = 5
+    port = "traffic-port"
+    protocol = "TCP"
+  }
+}
+
 
 resource "aws_lb_target_group_attachment" "app" {
   target_group_arn = "${aws_lb_target_group.app_tg.arn}"
@@ -55,6 +68,13 @@ resource "aws_lb_target_group_attachment" "app" {
   port             = 8080
   count = "${var.az_count}"
 }	
+
+resource "aws_lb_target_group_attachment" "static" {
+  target_group_arn = "${aws_lb_target_group.static_tg.arn}"
+  target_id        = "${element(var.static_instance_ids,count.index)}"
+  port             = 8080
+  count = "${var.az_count}"
+}
 
 
 resource "aws_lb_listener" "application" {
@@ -70,7 +90,7 @@ resource "aws_lb_listener" "application" {
   }
 }
 
-resource "aws_lb_listener_rule" "static" {
+resource "aws_lb_listener_rule" "static_images" {
   listener_arn = "${aws_lb_listener.application.arn}"
   priority     = 100
 
@@ -81,9 +101,23 @@ resource "aws_lb_listener_rule" "static" {
 
   condition {
     field  = "path-pattern"
-    values = ["/companyNews/images/*" , "/companyNews/styles/*"]
+    values = ["/companyNews/images/*"]
   }
 }
 
+resource "aws_lb_listener_rule" "static_styles" {
+  listener_arn = "${aws_lb_listener.application.arn}"
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.static_tg.arn}"
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/companyNews/styles/*"]
+  }
+}
 
 

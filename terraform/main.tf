@@ -24,14 +24,16 @@ module "vpc" {
    az_names = "${local.az_names}"
 }
 
-#module "static_web" {
-#   source = "./static"
-#   vpc_id = "${module.vpc.vpc_id}"
-#   private_subnets = "${module.vpc.private_subnets}"
-#   project = "${var.project}"
-#   environment = "${var.environment}"
-#   aws_ami = "${var.aws_ami}"
-#}
+module "static" {
+   source = "./static"
+   vpc_id = "${module.vpc.vpc_id}"
+   private_subnets = "${module.vpc.private_subnets}"
+   project = "${var.project}"
+   environment = "${var.environment}"
+   aws_ami = "${var.aws_ami}"
+   aws_pub_key = "${var.aws_public_key_name}"
+   az_count = "${local.az_count}"
+}
 
 module "application" {
    source = "./app"
@@ -52,8 +54,9 @@ module "common" {
    project = "${var.project}"
    environment = "${var.environment}"
    app_sg = "${module.application.sg_id}"
-#   static_sg = "${module.static.sg_id}"
+   static_sg = "${module.static.sg_id}"
    vpc_id = "${module.vpc.vpc_id}"
    app_instance_ids = ["${module.application.app_instance_ids}"]
+   static_instance_ids = ["${module.static.static_instance_ids}"]
    az_count = "${local.az_count}"
 }
