@@ -16,49 +16,31 @@ resource "aws_lb" "applb" {
 }
 
 
-resource "aws_security_group" "applb_sg" {
-   name = "companyNews_alb"
-   description = "ALB for access application"
-   ingress {
-      from_port = 443
-      to_port   = 443
-      protocol  = "https"
-      cidr_blocks = ["0.0.0.0/0"]
-   }
-
-   egress {	
-      from_port = 8080
-      to_port   = 8080
-      protocol  = "http"
-      security_groups = ["${var.app_sg}"]
-   }
-
-}
 
 resource "aws_lb_target_group" "app_tg" {
   name     = "application"
   port     = 8080
-  protocol = "TCP"
+  protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
   target_type = "instance"
-  health_check {
-    interval = 5
-    port = "traffic-port"
-    protocol = "TCP"
-  }
+#  health_check {
+#    interval = 10
+#    port = "traffic-port"
+#    protocol = "TCP"
+#  }
 }
 
 resource "aws_lb_target_group" "static_tg" {
   name     = "static"
   port     = 8080
-  protocol = "TCP"
+  protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
   target_type = "instance"
-  health_check {
-    interval = 5
-    port = "traffic-port"
-    protocol = "TCP"
-  }
+#  health_check {
+#    interval = 10
+#    port = "traffic-port"
+#    protocol = "TCP"
+#  }
 }
 
 
@@ -107,7 +89,7 @@ resource "aws_lb_listener_rule" "static_images" {
 
 resource "aws_lb_listener_rule" "static_styles" {
   listener_arn = "${aws_lb_listener.application.arn}"
-  priority     = 100
+  priority     = 101
 
   action {
     type             = "forward"
@@ -121,3 +103,6 @@ resource "aws_lb_listener_rule" "static_styles" {
 }
 
 
+output "elb_sg" {
+   value = "${aws_security_group.applb_sg.id}"
+}

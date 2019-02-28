@@ -8,9 +8,9 @@ provider "aws" {
 #Azs
 data "aws_availability_zones" "available" {}
 
-#Create az_count number of resources or default 1. You can change the default here.
+#Create az_count number of resources or default 2(Load balancer needs min 2 subnets). You can change the default here.
 locals {
-   az_count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
+   az_count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 2}"
    #az_names = ["${data.aws_availability_zones.available.names.*}"]
 }
 
@@ -33,6 +33,7 @@ module "static" {
    aws_ami = "${var.aws_ami}"
    aws_pub_key = "${var.aws_public_key_name}"
    az_count = "${local.az_count}"
+   elb_sg = "${module.common.elb_sg}"
 }
 
 module "application" {
@@ -45,6 +46,7 @@ module "application" {
    aws_ami = "${var.aws_ami}"
    aws_pub_key = "${var.aws_public_key_name}"
    az_count = "${local.az_count}"
+   elb_sg = "${module.common.elb_sg}"
 }
 
 module "common" {
@@ -59,4 +61,9 @@ module "common" {
    app_instance_ids = ["${module.application.app_instance_ids}"]
    static_instance_ids = ["${module.static.static_instance_ids}"]
    az_count = "${local.az_count}"
+   app_sg = "${module.application.sg_id}"
+   static_sg = "${module.static.sg_id}"
+   aws_ami = "${var.aws_ami}"
+   aws_pub_key = "${var.aws_public_key_name}"
+
 }

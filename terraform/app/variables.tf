@@ -13,5 +13,5 @@ variable "vpc_id" {}
 variable "environment" {}
 variable "project" {}
 variable "az_count" {}
-
+variable "elb_sg" {}
 

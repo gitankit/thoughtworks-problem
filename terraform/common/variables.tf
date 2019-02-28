@@ -21,3 +21,12 @@ variable "static_instance_ids" {
 
 
 variable "az_count" {}
+
+variable "aws_ami" {}
+
+variable "aws_instance_type" {
+   default = "t2.micro"
+}
+
+variable "aws_pub_key" {}
+
