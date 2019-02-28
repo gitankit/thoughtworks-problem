@@ -1,6 +1,3 @@
-#Azs
-data "aws_availability_zones" "available" {}
-
 
 resource "aws_instance" "app" {
    ami = "${var.aws_ami}"
@@ -13,8 +10,16 @@ resource "aws_instance" "app" {
       volume_type = "gp2"
       volume_size = "20"
    }
-   count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
+   #count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
+   count = "${var.az_count}"
+
    tags {
       Name = "${format("App-%01d" , count.index + 1)}"
    }
 }
+
+output "app_instance_ids" {
+   value = ["${aws_instance.app.*.id}"]
+}
+
+

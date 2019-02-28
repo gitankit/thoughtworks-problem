@@ -20,7 +20,7 @@ variable "project" {
 variable "environment" {
    type = "string"
    #default = "stage"
-   default = "prod"
+   default = "stage"
 }
 
 variable "aws_ami" {
@@ -30,3 +30,7 @@ variable "aws_ami" {
 variable "aws_public_key_name" {
    default = "instance_key"
 }
+
+
+
+

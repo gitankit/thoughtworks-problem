@@ -16,3 +16,11 @@ variable "cidr_private_subnet" {
 variable "project" {}
 
 variable "environment" {}
+
+variable "az_count" {}
+
+variable "az_names" {
+   type = "list"
+}
+
+

@@ -1,0 +1,89 @@
+resource "aws_lb" "applb" {
+  name               = "companynews"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = ["${aws_security_group.applb_sg.id}"]
+  #subnets            = ["${aws_subnet.public.*.id}"]
+  subnets            = ["${var.public_subnets}"]
+
+  enable_deletion_protection = true
+
+
+  tags = {
+    Environment = "${var.environment}"
+    Project = "${var.project}"
+  }
+}
+
+
+resource "aws_security_group" "applb_sg" {
+   name = "companyNews_alb"
+   description = "ALB for access application"
+   ingress {
+      from_port = 443
+      to_port   = 443
+      protocol  = "https"
+      cidr_blocks = ["0.0.0.0/0"]
+   }
+
+   egress {	
+      from_port = 8080
+      to_port   = 8080
+      protocol  = "http"
+      security_groups = ["${var.app_sg}"]
+   }
+
+}
+
+resource "aws_lb_target_group" "app_tg" {
+  name     = "application"
+  port     = 8080
+  protocol = "TCP"
+  vpc_id   = "${var.vpc_id}"
+  target_type = "instance"
+  health_check {
+    interval = 5
+    port = "traffic-port"
+    protocol = "TCP"
+  }
+}
+
+
+resource "aws_lb_target_group_attachment" "app" {
+  target_group_arn = "${aws_lb_target_group.app_tg.arn}"
+  target_id        = "${element(var.app_instance_ids,count.index)}"
+  port             = 8080
+  count = "${var.az_count}"
+}	
+
+
+resource "aws_lb_listener" "application" {
+  load_balancer_arn = "${aws_lb.applb.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+#  ssl_policy        = "ELBSecurityPolicy-2016-08"
+#  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.app_tg.arn}"
+  }
+}
+
+resource "aws_lb_listener_rule" "static" {
+  listener_arn = "${aws_lb_listener.application.arn}"
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.static_tg.arn}"
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/companyNews/images/*" , "/companyNews/styles/*"]
+  }
+}
+
+
+
