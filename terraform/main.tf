@@ -47,6 +47,7 @@ module "application" {
    aws_pub_key = "${var.aws_public_key_name}"
    az_count = "${local.az_count}"
    elb_sg = "${module.common.elb_sg}"
+   bastion_ip = "${module.common.bastion_public_ip}"
 }
 
 module "common" {
