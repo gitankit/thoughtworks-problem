@@ -21,7 +21,8 @@ resource "aws_instance" "app" {
       inline = [
          "wget http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.38/bin/apache-tomcat-8.5.38.tar.gz" ,
          "tar -xzf apache-tomcat-8.5.38.tar.gz" ,
-         "mv apache-tomcat-8.5.38 /opt/"]
+         "sudo mv apache-tomcat-8.5.38 /opt/" ,
+         "sudo /opt/apache-tomcat-8.5.38/bin/catalina.sh start"]
   }
 
   connection {
@@ -29,7 +30,7 @@ resource "aws_instance" "app" {
      user = "ec2-user"
      private_key = "${file("${path.root}/keys/priv.key")}"
      port = 22
-     host = "${aws_instance.app.private_ip}"
+     host = "${self.private_ip}"
      bastion_host = "${var.bastion_ip}"
      
   }
@@ -40,4 +41,6 @@ output "app_instance_ids" {
    value = ["${aws_instance.app.*.id}"]
 }
 
-
+output "app_private_ips" {
+   value = ["${aws_instance.app.*.private_ip}"]
+}

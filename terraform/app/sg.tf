@@ -16,3 +16,4 @@ resource "aws_security_group" "app" {
 output "sg_id" {
    value = "${aws_security_group.app.id}"
 }
+
