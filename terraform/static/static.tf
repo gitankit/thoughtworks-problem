@@ -16,6 +16,24 @@ resource "aws_instance" "static" {
    tags {
       Name = "${format("Static-%01d" , count.index + 1)}"
    }
+  provisioner "remote-exec" {
+      inline = [
+         "wget http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.38/bin/apache-tomcat-8.5.38.tar.gz" ,
+         "tar -xzf apache-tomcat-8.5.38.tar.gz" ,
+         "sudo mv apache-tomcat-8.5.38 /opt/" ,
+         "sudo /opt/apache-tomcat-8.5.38/bin/catalina.sh start"]
+  }
+
+  connection {
+     type = "ssh"
+     user = "ec2-user"
+     private_key = "${file("${path.root}/keys/priv.key")}"
+     port = 22
+     host = "${self.private_ip}"
+     bastion_host = "${var.bastion_ip}"
+     
+  }
+
 }
 
 output "static_instance_ids" {
@@ -23,3 +41,6 @@ output "static_instance_ids" {
 }
 
 
+output "static_private_ips" {
+   value = ["${aws_instance.static.*.private_ip}"]
+}

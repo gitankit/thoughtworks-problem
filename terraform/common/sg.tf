@@ -81,6 +81,24 @@ resource "aws_security_group_rule" "bastion_egress_to_static" {
    source_security_group_id = "${var.static_sg}"
 }
 
+resource "aws_security_group_rule" "ingress_from_bastion_to_app" {
+   type = "ingress"
+   from_port = 22
+   to_port   = 22
+   protocol  = "tcp"
+   security_group_id = "${var.app_sg}"
+   source_security_group_id = "${aws_security_group.bastion.id}"
+}
+resource "aws_security_group_rule" "ingress_from_bastion_to_static" {
+   type = "ingress"
+   from_port = 22
+   to_port   = 22
+   protocol  = "tcp"
+   security_group_id = "${var.static_sg}"
+   source_security_group_id = "${aws_security_group.bastion.id}"
+}
+
+
 #80 & 443 egress to install packages
 resource "aws_security_group_rule" "app_internet_access_80" {
    type = "egress"
