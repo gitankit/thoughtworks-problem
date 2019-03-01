@@ -30,3 +30,4 @@ variable "aws_instance_type" {
 
 variable "aws_pub_key" {}
 
+

@@ -6,7 +6,7 @@ resource "aws_lb" "applb" {
   #subnets            = ["${aws_subnet.public.*.id}"]
   subnets            = ["${var.public_subnets}"]
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
 
   tags = {
