@@ -5,7 +5,6 @@ resource "aws_instance" "app" {
    key_name = "${var.aws_pub_key}"
    vpc_security_group_ids = ["${aws_security_group.app.id}"]
    subnet_id = "${element(var.private_subnets,count.index)}"
-   #iam_instance_profile =
    root_block_device {
       volume_type = "gp2"
       volume_size = "20"
@@ -22,7 +21,22 @@ resource "aws_instance" "app" {
          "wget http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.38/bin/apache-tomcat-8.5.38.tar.gz" ,
          "tar -xzf apache-tomcat-8.5.38.tar.gz" ,
          "sudo mv apache-tomcat-8.5.38 /opt/" ,
-         "sudo /opt/apache-tomcat-8.5.38/bin/catalina.sh start"]
+         "sudo chown ec2-user:ec2-user -R /opt/apache-tomcat-8.5.38" ,
+         "rm -rf /opt/apache-tomcat-8.5.38/webapps/*"
+     ]
+  }
+  provisioner "file" {
+      source = "${path.root}/confs/app/server.xml"
+      destination = "/opt/apache-tomcat-8.5.38/conf/server.xml"
+  }
+
+  provisioner "file" {
+      source = "${path.root}/artifacts/companyNews.war"
+      destination = "/opt/apache-tomcat-8.5.38/webapps/companyNews.war"
+  }
+
+  provisioner "remote-exec" {
+      inline = ["sudo nohup /opt/apache-tomcat-8.5.38/bin/catalina.sh start" , "sleep 20"]
   }
 
   connection {
