@@ -23,11 +23,13 @@ resource "aws_lb_target_group" "app_tg" {
   protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
   target_type = "instance"
-#  health_check {
-#    interval = 10
-#    port = "traffic-port"
-#    protocol = "TCP"
-#  }
+  health_check {
+    interval = 10
+    port = "traffic-port"
+    protocol = "HTTP"
+    path = "/companyNews/"
+    matcher = "200"
+  }
 }
 
 resource "aws_lb_target_group" "static_tg" {
@@ -36,11 +38,13 @@ resource "aws_lb_target_group" "static_tg" {
   protocol = "HTTP"
   vpc_id   = "${var.vpc_id}"
   target_type = "instance"
-#  health_check {
-#    interval = 10
-#    port = "traffic-port"
-#    protocol = "TCP"
-#  }
+  health_check {
+    interval = 10
+    port = "traffic-port"
+    protocol = "HTTP"
+    path = "/companyNews/styles/company.css"
+    matcher = "200"
+  }
 }
 
 
