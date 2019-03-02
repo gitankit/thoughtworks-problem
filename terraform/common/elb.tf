@@ -65,10 +65,10 @@ resource "aws_lb_target_group_attachment" "static" {
 
 resource "aws_lb_listener" "application" {
   load_balancer_arn = "${aws_lb.applb.arn}"
-  port              = "80"
-  protocol          = "HTTP"
-#  ssl_policy        = "ELBSecurityPolicy-2016-08"
-#  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "${aws_acm_certificate.companynews.arn}"
 
   default_action {
     type             = "forward"
@@ -105,6 +105,7 @@ resource "aws_lb_listener_rule" "static_styles" {
     values = ["/companyNews/styles/*"]
   }
 }
+
 
 
 output "elb_sg" {
