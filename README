@@ -28,5 +28,30 @@ keys      -- Contains RSA keys for ssh access.
 artifacts -- Contains deployable componenets like war files , static images and css.
 
 
+How to Run
+======================================================================================================
+1. Install terraform.
+2. Get IAM access credentials or if using from AWS instance then permission to create , update , list and 
+delete following resources should be provided:
+EC2 , ALB , VPC , ACM , EIP
+3. Clone the repository
+4. Get inside the cloned-repo-folder(thoughtworks-problem)->terraform.
+5. Run terraform init
+6. Run terraform plan --> This will display a plan and 52 resources to be created.
+7. Run terraform apply
+
+More
+----------------------
+8. You will get dns_name_application and bastion_ip_address as output after the terraform in (7) ran 
+successfully. 
+9. Browse to the url to use the application. You will have to add exception for the certificate as it is
+self signed.
+10. (Optional) If you want to check the config inside servers then login to bastion ip provided in (8)
+using the private key in terraform->keys folder.
+11. From bastion you can access respective application / static instances. [ ssh <private-ip-addr> ]
+
+
+
+
 
 
