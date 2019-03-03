@@ -4,7 +4,6 @@ resource "aws_instance" "bastion" {
    key_name = "${var.aws_pub_key}"
    vpc_security_group_ids = ["${aws_security_group.bastion.id}"]
    subnet_id = "${element(var.public_subnets,0)}"
-   #iam_instance_profile =
    root_block_device {
       volume_type = "gp2"
       volume_size = "20"
@@ -13,6 +12,8 @@ resource "aws_instance" "bastion" {
    tags {
       Name = "bastion"
    }
+
+
 }
 
 
@@ -30,6 +31,28 @@ resource "aws_eip" "bastion_eip" {
 resource "aws_eip_association" "bastion_eip_assoc" {
   instance_id   = "${aws_instance.bastion.id}"
   allocation_id = "${aws_eip.bastion_eip.id}"
+}
+
+#Copying private key to bastion host for manual debugging.
+resource "null_resource" "bastion_access" {
+  provisioner "file" {
+      source = "${path.root}/keys/priv.key"
+      destination = "/home/ec2-user/.ssh/id_rsa"
+  }
+
+  provisioner "remote-exec" {
+      inline = ["chmod 600 /home/ec2-user/.ssh/id_rsa"]
+  }
+
+  connection {
+     type = "ssh"
+     user = "ec2-user"
+     private_key = "${file("${path.root}/keys/priv.key")}"
+     port = 22
+     host = "${aws_eip.bastion_eip.public_ip}"
+     
+  }
+
 }
 
 output "bastion_public_ip" {
