@@ -51,7 +51,8 @@ self signed.
 10. (Optional) If you want to check the config inside servers then login to bastion ip provided in (8)
 using the private key in terraform->keys folder.
 11. From bastion you can access respective application / static instances. [ ssh <private-ip-addr> ]
-
+12. A basic test script which checks the application endpoints is setup already named test.sh.
+Invoke the script using the syntax sh test.sh <dns_name_application from (8)>
 
 Known Issues
 ======================================================================================================
