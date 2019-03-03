@@ -1,4 +1,5 @@
 Repository to track thoughtworks problem statement
+Author: Ankit Sharma <findme.ankit@gmail.com>
 
 Directory Index
 =====================================================================================================
@@ -37,7 +38,8 @@ EC2 , ALB , VPC , ACM , EIP
 3. Clone the repository
 4. Get inside the cloned-repo-folder(thoughtworks-problem)->terraform.
 5. Run terraform init
-6. Run terraform plan --> This will display a plan and 52 resources to be created.
+6. Run terraform plan --> This will display a plan and 52 resources to be created. This will also ask
+for aws credentials interactively. 
 7. Run terraform apply
 
 More
@@ -50,6 +52,19 @@ self signed.
 using the private key in terraform->keys folder.
 11. From bastion you can access respective application / static instances. [ ssh <private-ip-addr> ]
 
+
+Known Issues
+======================================================================================================
+1. Make sure your resource limits for VPC , EC2 , Elastic IPs are enough.
+2. If terraform apply fails due to timeout then rerun terraform apply and it will again apply the 
+remaining changes. This fail might happed due to network issues.
+3. For AWS credentials either enter them interactively or export them in the environment.
+
+Change Defaults
+=======================================================================================================
+1. Most of the default set are in accordance with the application.
+2. Variables defined and set inside terraform->variables.tf can be changed without any issues.
+3. Module specific parameters can be changed in module definition in terraform->main.tf
 
 
 
