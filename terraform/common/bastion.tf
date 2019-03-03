@@ -3,6 +3,7 @@ resource "aws_instance" "bastion" {
    instance_type = "${var.aws_instance_type}"
    key_name = "${var.aws_pub_key}"
    vpc_security_group_ids = ["${aws_security_group.bastion.id}"]
+   #Always create bastion host in public subnet.At least 1 public subnet will be created.
    subnet_id = "${element(var.public_subnets,0)}"
    root_block_device {
       volume_type = "gp2"
@@ -23,7 +24,7 @@ resource "aws_security_group" "bastion" {
    vpc_id = "${var.vpc_id}"
 }
 
-
+#Elastic ip address for bastion host.
 resource "aws_eip" "bastion_eip" {
   vpc  = true
 }
@@ -34,6 +35,7 @@ resource "aws_eip_association" "bastion_eip_assoc" {
 }
 
 #Copying private key to bastion host for manual debugging.
+#This is used when logging on to instances from bastion.
 resource "null_resource" "bastion_access" {
   provisioner "file" {
       source = "${path.root}/keys/priv.key"

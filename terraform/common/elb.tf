@@ -1,3 +1,4 @@
+#Creates an AWS application load balancer
 resource "aws_lb" "applb" {
   name               = "companynews"
   internal           = false
@@ -16,7 +17,10 @@ resource "aws_lb" "applb" {
 }
 
 
+#Create 2 target groups for application and static seperately.
+#Requests will be routed based on path to these target groups.
 
+#Application target group.
 resource "aws_lb_target_group" "app_tg" {
   name     = "application"
   port     = 8080
@@ -32,6 +36,7 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
+#Static instances target group.
 resource "aws_lb_target_group" "static_tg" {
   name     = "static"
   port     = 8080
@@ -47,22 +52,23 @@ resource "aws_lb_target_group" "static_tg" {
   }
 }
 
-
+#Attach application instances to app target group.
 resource "aws_lb_target_group_attachment" "app" {
   target_group_arn = "${aws_lb_target_group.app_tg.arn}"
   target_id        = "${element(var.app_instance_ids,count.index)}"
   port             = 8080
-  count = "${var.az_count}"
+  count            = "${var.az_count}"
 }	
 
+#Attach static instances to static target group.
 resource "aws_lb_target_group_attachment" "static" {
   target_group_arn = "${aws_lb_target_group.static_tg.arn}"
   target_id        = "${element(var.static_instance_ids,count.index)}"
   port             = 8080
-  count = "${var.az_count}"
+  count            = "${var.az_count}"
 }
 
-
+#Attach an SSL listener to load balancer.
 resource "aws_lb_listener" "application" {
   load_balancer_arn = "${aws_lb.applb.arn}"
   port              = "443"
@@ -76,6 +82,8 @@ resource "aws_lb_listener" "application" {
   }
 }
 
+#Add listener rule for static target group.One rule per block.
+#This one for images.
 resource "aws_lb_listener_rule" "static_images" {
   listener_arn = "${aws_lb_listener.application.arn}"
   priority     = 100
@@ -91,6 +99,7 @@ resource "aws_lb_listener_rule" "static_images" {
   }
 }
 
+#This one for styles.
 resource "aws_lb_listener_rule" "static_styles" {
   listener_arn = "${aws_lb_listener.application.arn}"
   priority     = 101
