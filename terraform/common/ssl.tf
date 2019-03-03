@@ -26,4 +26,6 @@ resource "aws_acm_certificate" "companynews" {
   certificate_body = "${tls_self_signed_cert.companynews.cert_pem}"
 }
 
-
+output "ssl_private_key" {
+   value = "${tls_private_key.companynews.private_key_pem}"
+}
