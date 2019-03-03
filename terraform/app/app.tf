@@ -1,3 +1,5 @@
+#Create application instances.Count number of instances will be created.
+#Set count to custom value to change the number of instances created.
 
 resource "aws_instance" "app" {
    ami = "${var.aws_ami}"
@@ -9,13 +11,13 @@ resource "aws_instance" "app" {
       volume_type = "gp2"
       volume_size = "20"
    }
-   #count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
-   count = "${var.az_count}"
+   #Change the variable az_count for number of instances.
+   count = "${var.instances_count}"
 
    tags {
       Name = "${format("App-%01d" , count.index + 1)}"
    }
-
+  #Provisioner to setup tomcat , deploy application
   provisioner "remote-exec" {
       inline = [
          "wget http://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.38/bin/apache-tomcat-8.5.38.tar.gz" ,
@@ -25,16 +27,20 @@ resource "aws_instance" "app" {
          "rm -rf /opt/apache-tomcat-8.5.38/webapps/*"
      ]
   }
+
+  #Copy the application configuration file
   provisioner "file" {
       source = "${path.root}/confs/app/server.xml"
       destination = "/opt/apache-tomcat-8.5.38/conf/server.xml"
   }
-
+  
+  #Copy the application war.
   provisioner "file" {
       source = "${path.root}/artifacts/companyNews.war"
       destination = "/opt/apache-tomcat-8.5.38/webapps/companyNews.war"
   }
 
+  #Start tomcat 
   provisioner "remote-exec" {
       inline = ["sudo nohup /opt/apache-tomcat-8.5.38/bin/catalina.sh start" , "sleep 20"]
   }
