@@ -111,3 +111,7 @@ resource "aws_lb_listener_rule" "static_styles" {
 output "elb_sg" {
    value = "${aws_security_group.applb_sg.id}"
 }
+
+output "elb_dns_endpoint" {
+   value = "${aws_lb.applb.dns_name}"
+}

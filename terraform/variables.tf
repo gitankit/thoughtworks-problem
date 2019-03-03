@@ -32,5 +32,13 @@ variable "aws_public_key_name" {
 }
 
 
+output "dns_name_application" {
+   value = "${module.common.elb_dns_endpoint}"
+}
+
+output "bastion_ip_address" {
+   value = "${module.common.bastion_public_ip}"
+}
+
 
 
