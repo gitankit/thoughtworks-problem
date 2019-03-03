@@ -1,2 +1,32 @@
 Repository to track thoughtworks problem statement
 
+Directory Index
+=====================================================================================================
+README -- This File
+terraform -- Contains infra provisioning and setup code
+test.sh -- Contains basic test cases for the application
+
+
+Terraform
+=====================================================================================================
+Terraform is used to create infra (ec2 , alb , vpc etc) on AWS cloud and then terarform provisioners 
+called to setup the aplication inside instance.
+
+You can download terraform from : https://www.terraform.io/downloads.html
+Terraform version: 0.11.11 (Please use the same version as mentioned)
+
+
+
+Terraform Modules
+=====================================================================================================
+app       -- Contains dynamic application instances with tomcat and web application (war files).
+static    -- Contains static instances with static files (images , styles)
+common    -- Contains common componenets to facilitate setup. (Bastion server , load balancer , ssl certificate)
+vpc       -- Contains VPC componenets. (VPC , Internet gateway , nat gateway , subnets , route tables)
+confs     -- Contains tomcat configuration files.
+keys      -- Contains RSA keys for ssh access.
+artifacts -- Contains deployable componenets like war files , static images and css.
+
+
+
+
