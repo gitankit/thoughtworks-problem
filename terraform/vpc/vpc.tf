@@ -1,8 +1,8 @@
+#Create VPC
 resource "aws_vpc" "vpc" {
   cidr_block = "${var.cidr_block}"
   enable_dns_support = true
   enable_dns_hostnames = true
-
 
   tags = {
     Environment = "${var.environment}"
@@ -14,16 +14,12 @@ resource "aws_vpc" "vpc" {
 #Azs
 data "aws_availability_zones" "available" {}
 
-
-
-
 #Create public subnets
 resource "aws_subnet" "public" {
    vpc_id = "${aws_vpc.vpc.id}"
    #count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
    count = "${var.az_count}"
    availability_zone = "${element(data.aws_availability_zones.available.names,count.index)}"
-#   availability_zone = "${var.az_names[count.index]}"
    cidr_block = "${element(var.cidr_public_subnet,count.index)}"
    tags = {
       Name = "${format("public-%01d" , count.index + 1)}"
@@ -37,7 +33,6 @@ resource "aws_subnet" "private" {
    #count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) - 1: 1}"
    count = "${var.az_count}"
    availability_zone = "${element(data.aws_availability_zones.available.names,count.index)}"
-#   availability_zone = "${var.az_names[count.index]}"
    cidr_block = "${element(var.cidr_private_subnet,count.index)}"
    tags = {
       Name = "${format("private-%01d" , count.index + 1)}"
@@ -94,7 +89,6 @@ resource "aws_route_table" "private" {
 
 #Associate public subnets
 resource "aws_route_table_association" "public_associations" {
-#  count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
   count = "${var.az_count}"
   subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id = "${aws_route_table.public.id}"
@@ -102,7 +96,6 @@ resource "aws_route_table_association" "public_associations" {
 
 #Associate private subnets
 resource "aws_route_table_association" "private_associations" {
-#  count = "${var.environment == "prod" ? length(data.aws_availability_zones.available.names) : 1}"
   count = "${var.az_count}"
   subnet_id      = "${element(aws_subnet.private.*.id, count.index)}"
   route_table_id = "${aws_route_table.private.id}"

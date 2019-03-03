@@ -19,7 +19,6 @@ variable "project" {
 
 variable "environment" {
    type = "string"
-   #default = "stage"
    default = "stage"
 }
 
