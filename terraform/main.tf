@@ -3,7 +3,17 @@ provider "aws" {
    access_key = "${var.aws_access_key}" 
    secret_key = "${var.aws_secret_key}"
    region     = "${var.aws_region}"
+   version = "~> 2.0"
 }
+
+provider "null" {
+   version = "~> 2.1"
+}
+
+provider "tls" {
+   version = "~> 1.2"
+}
+
 
 #Azs
 data "aws_availability_zones" "available" {}
@@ -34,7 +44,7 @@ module "static" {
    aws_pub_key = "${var.aws_public_key_name}"
    #By default set to az_count but user specified instances can be specified.
    #To scale up the number of static instances increase this number or decrease for scaling down.
-   az_count = "${local.az_count}"
+   instances_count = "${local.az_count}"
    elb_sg = "${module.common.elb_sg}"
    bastion_ip = "${module.common.bastion_public_ip}"
 }
@@ -50,7 +60,7 @@ module "application" {
    aws_pub_key = "${var.aws_public_key_name}"
    #By default set to az_count but user specified instances can be specified.
    #To scale up the number of application instances increase this number or decrease for scaling down.
-   az_count = "${local.az_count}"
+   instances_count = "${local.az_count}"
    elb_sg = "${module.common.elb_sg}"
    bastion_ip = "${module.common.bastion_public_ip}"
 }
